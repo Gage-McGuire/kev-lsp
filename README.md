@@ -1,6 +1,6 @@
 ### KEV's Language Server
 
 `./kev-lsp-vscode` contains the files to run the LSP in vscode  
-`./rpc` contains code pertaining to the communication protocol
-`./handler` contains logic to route/handle requests/responses down correct paths
+`./rpc` contains code pertaining to the communication protocol  
+`./handler` contains logic to route/handle requests/responses down correct paths  
 `./logger` contains code that logs lsp data to defined log file
