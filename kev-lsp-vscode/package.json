@@ -3,21 +3,30 @@
     "displayName": "KEV LSP",
     "version": "0.0.1",
     "engines": {
-      "vscode": "^1.75.0"
+        "vscode": "^1.75.0"
     },
-    "categories": ["Programming Languages"],
+    "categories": [
+        "Programming Languages"
+    ],
     "activationEvents": [
-      "onLanguage:kev"
+        "onLanguage:kev"
     ],
     "main": "./extension.js",
     "contributes": {
-      "languages": [{
-        "id": "kev",
-        "extensions": [".kev"],
-        "aliases": ["KEV"]
-      }]
+        "languages": [
+            {
+                "id": "kev",
+                "extensions": [
+                    ".kev"
+                ],
+                "aliases": [
+                    "KEV"
+                ]
+            }
+        ]
     },
     "dependencies": {
-      "vscode-languageclient": "^9.0.1"
+        "dotenv": "^17.2.3",
+        "vscode-languageclient": "^9.0.1"
     }
 }

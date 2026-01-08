@@ -1,10 +1,11 @@
 const { LanguageClient, TransportKind } = require('vscode-languageclient/node');
+require('dotenv').config({ path: __dirname + '/../.env' });
 
 let client;
 
 function activate(context) {
     const serverOptions = {
-        command: '/Users/gagemcguire/Documents/GitHub/kev-lsp/kev-lsp',
+        command: process.env.LSP_PATH,
         transport: TransportKind.stdio
     };
 
