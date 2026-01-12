@@ -20,7 +20,9 @@ func HandleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 	case "textDocument/didChange":
 		handleTextDocumentDidChange(logger, state, content)
 	case "textDocument/hover":
-		handleTextDocumentHover(logger, writer, content)
+		handleTextDocumentHover(logger, writer, state, content)
+	case "textDocument/definition":
+		handleTextDocumentDefinition(logger, writer, state, content)
 	}
 }
 
@@ -44,7 +46,7 @@ func handleTextDocumentDidOpen(logger *log.Logger, state analysis.State, content
 	if err != nil {
 		logger.Printf("[ERROR] textDocument/didOpen: %s\n", err)
 	}
-	logger.Printf("[OPEN] textDocument/didOpen: %s %d\n",
+	logger.Printf("[INFO] textDocument/didOpen: %s %d\n",
 		notification.Params.TextDocument.URI,
 		notification.Params.TextDocument.Version,
 	)
@@ -60,7 +62,7 @@ func handleTextDocumentDidChange(logger *log.Logger, state analysis.State, conte
 	if err != nil {
 		logger.Printf("[ERROR] textDocument/didChange: %s\n", err)
 	}
-	logger.Printf("[CHANGE] textDocument/didChange: %s %d\n",
+	logger.Printf("[INFO] textDocument/didChange: %s %d\n",
 		notification.Params.TextDocument.URI,
 		notification.Params.TextDocument.Version,
 	)
@@ -72,25 +74,40 @@ func handleTextDocumentDidChange(logger *log.Logger, state analysis.State, conte
 	}
 }
 
-func handleTextDocumentHover(logger *log.Logger, writer io.Writer, content []byte) {
+func handleTextDocumentHover(logger *log.Logger, writer io.Writer, state analysis.State, content []byte) {
 	var request lsp.TextDocumentHoverRequest
 	err := json.Unmarshal(content, &request)
 	if err != nil {
 		logger.Printf("[ERROR] textDocument/hover: %s\n", err)
 	}
-	logger.Printf("[HOVER] textDocument/hover: %s %d:%d\n",
+	logger.Printf("[INFO] textDocument/hover: %s %d:%d\n",
 		request.Params.TextDocument.URI,
 		request.Params.Position.Line,
 		request.Params.Position.Character,
 	)
-	message := lsp.TextDocumentHoverResponse{
-		Response: lsp.Response{
-			RPCVersion: "2.0",
-			ID:         request.ID,
-		},
-		Result: lsp.TextDocumentHoverResult{
-			Contents: "Hover content",
-		},
+	message := state.OnHover(
+		request.ID,
+		request.Params.TextDocument.URI,
+		request.Params.Position,
+	)
+	rpc.WriteResponse(writer, message)
+}
+
+func handleTextDocumentDefinition(logger *log.Logger, writer io.Writer, state analysis.State, content []byte) {
+	var request lsp.TextDocumentDefinitionRequest
+	err := json.Unmarshal(content, &request)
+	if err != nil {
+		logger.Printf("[ERROR] textDocument/definition: %s\n", err)
 	}
+	logger.Printf("[INFO] textDocument/definition: %s %d:%d",
+		request.Params.TextDocument.URI,
+		request.Params.Position.Line,
+		request.Params.Position.Character,
+	)
+	message := state.OnDefinition(
+		request.ID,
+		request.Params.TextDocument.URI,
+		request.Params.Position,
+	)
 	rpc.WriteResponse(writer, message)
 }

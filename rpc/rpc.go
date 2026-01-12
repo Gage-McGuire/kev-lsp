@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+const RPCVersion = "2.0"
+
 type BaseMessage struct {
 	Method string `json:"method"`
 }

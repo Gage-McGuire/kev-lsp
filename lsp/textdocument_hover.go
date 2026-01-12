@@ -17,7 +17,3 @@ type TextDocumentHoverResponse struct {
 type TextDocumentHoverResult struct {
 	Contents string `json:"contents"`
 }
-
-func NewTextDocumentHoverResponse() TextDocumentHoverResponse {
-	return TextDocumentHoverResponse{}
-}
