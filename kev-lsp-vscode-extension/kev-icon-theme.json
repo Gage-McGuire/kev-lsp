@@ -1,0 +1,10 @@
+{
+    "iconDefinitions": {
+        "kev": {
+            "iconPath": "./icons/kev-icon.svg"
+        }
+    },
+    "fileExtensions": {
+        "kev": "kev"
+    }
+}

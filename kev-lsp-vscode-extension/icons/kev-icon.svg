@@ -1,0 +1,11 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+      <!-- Text -->
+  <text x="64" y="91"
+        text-anchor="middle"
+        font-family="monospace"
+        font-size="85"
+        font-weight="bold"
+        fill="#03fc73">
+    [K]
+  </text>
+</svg>

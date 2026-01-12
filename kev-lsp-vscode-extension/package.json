@@ -21,7 +21,18 @@
                 ],
                 "aliases": [
                     "KEV"
-                ]
+                ],
+                "icon": {
+                    "light": "./icons/kev-icon.svg",
+                    "dark": "./icons/kev-icon.svg"
+                }
+            }
+        ],
+        "iconThemes": [
+            {
+                "id": "kev-icons",
+                "label": "KEV Icons",
+                "path": "./kev-icon-theme.json"
             }
         ]
     },
