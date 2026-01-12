@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"strconv"
 )
 
@@ -67,4 +68,9 @@ func Split(message []byte, _ bool) (advance int, token []byte, err error) {
 
 	totalLength := len(header) + 4 + contentLength
 	return totalLength, message[:totalLength], nil
+}
+
+func WriteResponse(writer io.Writer, message any) {
+	response := Encode(message)
+	writer.Write([]byte(response))
 }
