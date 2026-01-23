@@ -44,7 +44,7 @@ jobs:
   
   test:
     name: Test
-    runs: ubuntu-latest
+    runs-on: ubuntu-latest
     steps: 
     - uses: actions/checkout@v4
 
