@@ -2,6 +2,7 @@ package analysis
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/kev-lsp/lsp"
 	"github.com/kev-lsp/rpc"
@@ -61,6 +62,49 @@ func (s *State) OnDefinition(id int, documentURI string, position lsp.Position) 
 				},
 			},
 		},
+	}
+	return message
+}
+
+func (s *State) OnCodeAction(id int, documentURI string) lsp.TextDocumentCodeActionResponse {
+	documentContents := s.Documents[documentURI]
+
+	// TODO: Add support with diagnostics
+	actions := []lsp.TextDocumentCodeAction{}
+	for row, line := range strings.Split(documentContents, "\n") {
+		idx := strings.Index(line, "let")
+		if idx >= 0 {
+			change := map[string][]lsp.TextEdit{}
+			change[documentURI] = []lsp.TextEdit{
+				{
+					Range: lsp.Range{
+						Start: lsp.Position{
+							Line:      row,
+							Character: idx,
+						},
+						End: lsp.Position{
+							Line:      row,
+							Character: idx + 3,
+						},
+					},
+					NewText: "var",
+				},
+			}
+			actions = append(actions, lsp.TextDocumentCodeAction{
+				Title: "var",
+				Edit: &lsp.WorkspaceEdit{
+					Changes: change,
+				},
+			})
+		}
+	}
+
+	message := lsp.TextDocumentCodeActionResponse{
+		Response: lsp.Response{
+			RPCVersion: rpc.RPCVersion,
+			ID:         id,
+		},
+		Result: actions,
 	}
 	return message
 }

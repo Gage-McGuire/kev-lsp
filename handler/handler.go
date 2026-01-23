@@ -23,6 +23,8 @@ func HandleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 		handleTextDocumentHover(logger, writer, state, content)
 	case "textDocument/definition":
 		handleTextDocumentDefinition(logger, writer, state, content)
+	case "textDocument/codeAction":
+		handleTextDocumentCodeAction(logger, writer, state, content)
 	}
 }
 
@@ -109,5 +111,20 @@ func handleTextDocumentDefinition(logger *log.Logger, writer io.Writer, state an
 		request.Params.TextDocument.URI,
 		request.Params.Position,
 	)
+	rpc.WriteResponse(writer, message)
+}
+
+func handleTextDocumentCodeAction(logger *log.Logger, writer io.Writer, state analysis.State, content []byte) {
+	var request lsp.TextDocumentCodeActionRequest
+	err := json.Unmarshal(content, &request)
+	if err != nil {
+		logger.Printf("[ERROR] textDocument/codeAction: %s\n", err)
+	}
+	logger.Printf("[INFO] textDocument/codeAction: %s %d:%d",
+		request.Params.TextDocument.URI,
+		request.Params.Range.Start.Line,
+		request.Params.Range.Start.Character,
+	)
+	message := state.OnCodeAction(request.ID, request.Params.TextDocument.URI)
 	rpc.WriteResponse(writer, message)
 }

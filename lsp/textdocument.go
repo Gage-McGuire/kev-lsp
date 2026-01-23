@@ -21,6 +21,15 @@ type TextDocumentPositionParams struct {
 	Position     Position               `json:"position"`
 }
 
+type WorkspaceEdit struct {
+	Changes map[string][]TextEdit `json:"changes"`
+}
+
+type TextEdit struct {
+	Range   Range  `json:"range"`
+	NewText string `json:"newText"`
+}
+
 type Position struct {
 	Line      int `json:"line"`
 	Character int `json:"character"`
