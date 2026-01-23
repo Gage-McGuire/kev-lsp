@@ -74,5 +74,5 @@ func Split(message []byte, _ bool) (advance int, token []byte, err error) {
 
 func WriteResponse(writer io.Writer, message any) {
 	response := Encode(message)
-	writer.Write([]byte(response))
+	_, _ = writer.Write([]byte(response))
 }

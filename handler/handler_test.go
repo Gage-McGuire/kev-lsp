@@ -11,7 +11,9 @@ import (
 
 func TestHandleInitialize(t *testing.T) {
 	logFile := "test.log"
-	defer os.Remove(logFile)
+	defer func() {
+		_ = os.Remove(logFile)
+	}()
 	testLogger := logger.GetLogger(logFile)
 
 	var writer bytes.Buffer

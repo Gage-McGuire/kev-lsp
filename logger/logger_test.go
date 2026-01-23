@@ -8,7 +8,9 @@ import (
 
 func TestGetLogger(t *testing.T) {
 	logFile := "test.log"
-	defer os.Remove(logFile)
+	defer func() {
+		_ = os.Remove(logFile)
+	}()
 
 	logger := GetLogger(logFile)
 	if logger == nil {

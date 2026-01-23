@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	_ = godotenv.Load()
 	logFile := os.Getenv("LOG_FILE")
 	logger := logger.GetLogger(logFile)
 
