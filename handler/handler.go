@@ -18,13 +18,15 @@ func HandleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 	case "textDocument/didOpen":
 		handleTextDocumentDidOpen(logger, state, content)
 	case "textDocument/didChange":
-		handleTextDocumentDidChange(logger, state, content)
+		handleTextDocumentDidChange(logger, writer, state, content)
 	case "textDocument/hover":
 		handleTextDocumentHover(logger, writer, state, content)
 	case "textDocument/definition":
 		handleTextDocumentDefinition(logger, writer, state, content)
 	case "textDocument/codeAction":
 		handleTextDocumentCodeAction(logger, writer, state, content)
+	case "textDocument/completion":
+		handleTextDocumentCompletion(logger, writer, state, content)
 	}
 }
 
@@ -58,7 +60,7 @@ func handleTextDocumentDidOpen(logger *log.Logger, state analysis.State, content
 	)
 }
 
-func handleTextDocumentDidChange(logger *log.Logger, state analysis.State, content []byte) {
+func handleTextDocumentDidChange(logger *log.Logger, writer io.Writer, state analysis.State, content []byte) {
 	var notification lsp.TextDocumentDidChangeNotification
 	err := json.Unmarshal(content, &notification)
 	if err != nil {
@@ -69,10 +71,21 @@ func handleTextDocumentDidChange(logger *log.Logger, state analysis.State, conte
 		notification.Params.TextDocument.Version,
 	)
 	for _, contentChange := range notification.Params.ContentChanges {
-		state.UpdateDocument(
+		diagnostics := state.UpdateDocument(
 			notification.Params.TextDocument.URI,
 			contentChange.Text,
 		)
+		message := lsp.PublishDiagnosticsNotification{
+			Notification: lsp.Notification{
+				RPCVersion: rpc.RPCVersion,
+				Method:     "textDocument/publishDiagnostics",
+			},
+			Params: lsp.PublishDiagnosticsParams{
+				URI:         notification.Params.TextDocument.URI,
+				Diagnostics: diagnostics,
+			},
+		}
+		rpc.WriteResponse(writer, message)
 	}
 }
 
@@ -126,5 +139,20 @@ func handleTextDocumentCodeAction(logger *log.Logger, writer io.Writer, state an
 		request.Params.Range.Start.Character,
 	)
 	message := state.OnCodeAction(request.ID, request.Params.TextDocument.URI)
+	rpc.WriteResponse(writer, message)
+}
+
+func handleTextDocumentCompletion(logger *log.Logger, writer io.Writer, state analysis.State, content []byte) {
+	var request lsp.TextDocumentCompletionRequest
+	err := json.Unmarshal(content, &request)
+	if err != nil {
+		logger.Printf("[ERROR] textDocument/completion: %s\n", err)
+	}
+	logger.Printf("[INFO] textDocument/completion: %s %d:%d\n",
+		request.Params.TextDocument.URI,
+		request.Params.Position.Line,
+		request.Params.Position.Character,
+	)
+	message := state.OnCompletion(request.ID)
 	rpc.WriteResponse(writer, message)
 }

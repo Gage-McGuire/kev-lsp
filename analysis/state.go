@@ -19,12 +19,41 @@ func NewState() State {
 	}
 }
 
-func (s *State) OpenDocument(documentURI string, text string) {
-	s.Documents[documentURI] = text
+func getDiagnostics(text string) []lsp.Diagnostic {
+	// TODO: Add the actual diagnostics look up here
+	diagnostics := []lsp.Diagnostic{}
+	for row, line := range strings.Split(text, "\n") {
+		idx := strings.Index(line, "let")
+		if idx >= 0 {
+			diagnostic := lsp.Diagnostic{
+				Range: lsp.Range{
+					Start: lsp.Position{
+						Line:      row,
+						Character: idx,
+					},
+					End: lsp.Position{
+						Line:      row,
+						Character: idx + 3,
+					},
+				},
+				Severity: lsp.SeverityError,
+				Source:   "KEV LSP",
+				Message:  "let is not allowed, use var instead",
+			}
+			diagnostics = append(diagnostics, diagnostic)
+		}
+	}
+	return diagnostics
 }
 
-func (s *State) UpdateDocument(documentURI string, text string) {
+func (s *State) OpenDocument(documentURI string, text string) []lsp.Diagnostic {
 	s.Documents[documentURI] = text
+	return getDiagnostics(text)
+}
+
+func (s *State) UpdateDocument(documentURI string, text string) []lsp.Diagnostic {
+	s.Documents[documentURI] = text
+	return getDiagnostics(text)
 }
 
 func (s *State) OnHover(id int, documentURI string, position lsp.Position) lsp.TextDocumentHoverResponse {
@@ -68,7 +97,6 @@ func (s *State) OnDefinition(id int, documentURI string, position lsp.Position) 
 
 func (s *State) OnCodeAction(id int, documentURI string) lsp.TextDocumentCodeActionResponse {
 	documentContents := s.Documents[documentURI]
-
 	// TODO: Add support with diagnostics
 	actions := []lsp.TextDocumentCodeAction{}
 	for row, line := range strings.Split(documentContents, "\n") {
@@ -105,6 +133,30 @@ func (s *State) OnCodeAction(id int, documentURI string) lsp.TextDocumentCodeAct
 			ID:         id,
 		},
 		Result: actions,
+	}
+	return message
+}
+
+func (s *State) OnCompletion(id int) lsp.TextDocumentCompletionResponse {
+	// TODO: Add the actual completion look up here
+	items := []lsp.CompletionItem{
+		{
+			Label:         "var",
+			Detail:        "Variable",
+			Documentation: "A variable is a named value that can be used to store data.",
+		},
+		{
+			Label:         "func",
+			Detail:        "Function",
+			Documentation: "A function is a named block of code that can be used to perform a task.",
+		},
+	}
+	message := lsp.TextDocumentCompletionResponse{
+		Response: lsp.Response{
+			RPCVersion: rpc.RPCVersion,
+			ID:         id,
+		},
+		Result: items,
 	}
 	return message
 }
