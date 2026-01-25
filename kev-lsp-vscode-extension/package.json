@@ -34,6 +34,13 @@
                 "label": "KEV Icons",
                 "path": "./kev-icon-theme.json"
             }
+        ],
+        "grammars": [
+            {
+                "language": "kev",
+                "scopeName": "source.kev",
+                "path": "./kev.tmLanguage.json"
+            }
         ]
     },
     "dependencies": {
