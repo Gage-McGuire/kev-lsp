@@ -1,6 +1,6 @@
 package lsp
 
-import "github.com/kev-lsp/rpc"
+import "github.com/Gage-McGuire/kev-lsp/rpc"
 
 type InitializeRequest struct {
 	Request

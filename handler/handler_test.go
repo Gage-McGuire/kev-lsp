@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kev-lsp/logger"
+	"github.com/Gage-McGuire/kev-lsp/logger"
 )
 
 func TestHandleInitialize(t *testing.T) {

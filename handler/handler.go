@@ -5,9 +5,9 @@ import (
 	"io"
 	"log"
 
-	"github.com/kev-lsp/analysis"
-	"github.com/kev-lsp/lsp"
-	"github.com/kev-lsp/rpc"
+	"github.com/Gage-McGuire/kev-lsp/analysis"
+	"github.com/Gage-McGuire/kev-lsp/lsp"
+	"github.com/Gage-McGuire/kev-lsp/rpc"
 )
 
 func HandleMessage(logger *log.Logger, writer io.Writer, state analysis.State, method string, content []byte) {

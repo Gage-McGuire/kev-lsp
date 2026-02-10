@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"os"
 
+	"github.com/Gage-McGuire/kev-lsp/analysis"
+	"github.com/Gage-McGuire/kev-lsp/handler"
+	"github.com/Gage-McGuire/kev-lsp/logger"
+	"github.com/Gage-McGuire/kev-lsp/rpc"
 	"github.com/joho/godotenv"
-	"github.com/kev-lsp/analysis"
-	"github.com/kev-lsp/handler"
-	"github.com/kev-lsp/logger"
-	"github.com/kev-lsp/rpc"
 )
 
 func main() {

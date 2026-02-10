@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kev-lsp/lsp"
-	"github.com/kev-lsp/rpc"
+	"github.com/Gage-McGuire/kev-lsp/lsp"
+	"github.com/Gage-McGuire/kev-lsp/rpc"
 )
 
 type State struct {
